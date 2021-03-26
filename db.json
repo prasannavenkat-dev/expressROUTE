@@ -1,0 +1,43 @@
+{
+    "mentors": [
+        "guvi 1",
+        "guvi 2",
+        "guvi 3",
+        "guvi 4"
+    ],
+    "students": [
+        "stud 1",
+        "stud 2",
+        "stud 3",
+        "stud 4",
+        "stud 5",
+        "stud 6",
+        "stud 7",
+        "stud 8",
+        "stud 9",
+        "stud 10",
+        "stud 11"
+    ],
+    "assignedMentor": [
+        "guvi 1",
+        "guvi 2"
+    ],
+    "assignedStudent": [
+        "stud 1",
+        "stud 2",
+        "stud 3"
+    ],
+    "assign": [
+        {
+            "guvi 1": [
+                "stud 1",
+                "stud 2"
+            ]
+        },
+        {
+            "guvi 2": [
+                "stud 3"
+            ]
+        }
+    ]
+}
