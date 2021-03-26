@@ -11,6 +11,7 @@ const mongoClient = mongodb.MongoClient;
 
 const dbUrl = process.env.DB_URL || "mongodb://127.0.0.1:27017" ;
 
+const port = process.env.PORT || 3000 ;
 
 app.get("/", function (req, res) {
 
@@ -384,6 +385,6 @@ console.log(error);
 
 
 
-app.listen(3000, function () {
+app.listen(port, function () {
     console.log("Server Started at 3000!!");
 })
