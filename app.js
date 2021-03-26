@@ -364,9 +364,8 @@ try{
     let db = clientInfo.db('stud_mentor');
     let data= await db.collection('assign').find({_id:mentorId}).toArray()
     if(data.length){
-        let alpha = Object.keys(data[0])
-        let num = data[0][alpha[1]]
-        res.send(num)
+       
+        res.send(data)
         clientInfo.close();
     }
     else if(data.length===0){
