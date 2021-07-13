@@ -7,11 +7,11 @@ require('dotenv').config();
 const mongodb = require('mongodb')
 
 const mongoClient = mongodb.MongoClient;
-// const dbUrl = ;
 
-const dbUrl = process.env.DB_URL || "mongodb://127.0.0.1:27017" ;
 
-const port = process.env.PORT || 3000 ;
+const dbUrl = process.env.DB_URL ;
+
+const port = process.env.PORT || 3000;
 
 app.get("/", function (req, res) {
 
@@ -20,71 +20,74 @@ app.get("/", function (req, res) {
 
 })
 
-app.get("/showMentors",async function(req,res){
+app.get("/showMentors", async function (req, res) {
 
-try{
-    let clientInfo = await mongoClient.connect(dbUrl);
-    let db = clientInfo.db('stud_mentor');
+    try {
+        let clientInfo = await mongoClient.connect(dbUrl);
+        let db = clientInfo.db('stud_mentor');
 
-    let listOfMentors = await db.collection('mentors').find().toArray();
-    res.send(listOfMentors);
-    clientInfo.close(); 
+        let listOfMentors = await db.collection('mentors').find().toArray();
+        res.send(listOfMentors);
+        clientInfo.close();
 
-}
-catch(error){
-    console.log('error')
-}
+    }
+    catch (error) {
+        console.log('error')
+    }
 
 })
 
 
-app.get("/showStudents",async function(req,res){
+app.get("/showStudents", async function (req, res) {
 
-    try{
+    try {
         let clientInfo = await mongoClient.connect(dbUrl);
         let db = clientInfo.db('stud_mentor');
-    
+
         let listOfStudents = await db.collection('students').find().toArray();
         res.send(listOfStudents);
-        clientInfo.close(); 
-    
+        clientInfo.close();
+
     }
-    catch(error){
+    catch (error) {
         console.log('error')
     }
-    
-    })
 
-    app.get("/showAssign",async function(req,res){
+})
 
-        try{
-            let clientInfo = await mongoClient.connect(dbUrl);
-            let db = clientInfo.db('stud_mentor');
-        
-            let data = await db.collection('assign').find().toArray();
-            res.send(data);
-            clientInfo.close(); 
-        
-        }
-        catch(error){
-            console.log('error')
-        }
-        
-        })
+app.get("/showAssign", async function (req, res) {
+
+    try {
+        let clientInfo = await mongoClient.connect(dbUrl);
+        let db = clientInfo.db('stud_mentor');
+
+        let data = await db.collection('assign').find().toArray();
+        res.send(data);
+        clientInfo.close();
+
+    }
+    catch (error) {
+        console.log('error')
+    }
+
+})
 
 
 //OzQhEmUYyn1WrHsv
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
+
+
+
 
 app.post("/mentorlist", async function (req, res) {
-    var mentorId = req.body.mentorId
-    var mentorName = req.body.mentorName;
+
 
 
 
     try {
 
-
+        var mentorId = req.body.mentorId
+        var mentorName = req.body.mentorName;
         let clientInfo = await mongoClient.connect(dbUrl);
         let db = clientInfo.db('stud_mentor');
 
@@ -93,7 +96,7 @@ app.post("/mentorlist", async function (req, res) {
             "mentorName": mentorName
         };
 
-        db.collection("mentors").insertOne(userData, function (err, res) {
+        db.collection("mentors").insertOne(userData, function (err, data) {
             if (err) throw err;
             console.log("inserted");
 
@@ -108,26 +111,18 @@ app.post("/mentorlist", async function (req, res) {
         console.log('error')
     }
 
-
-
-
-
-
-
-
-
 })
 
 
 
 app.post("/studentlist", async function (req, res) {
 
-    var studentName = req.body.studentName;
-    var studentId = req.body.studentId
-
+  
 
 
     try {
+        var studentName = req.body.studentName;
+        var studentId = req.body.studentId;
 
         let clientInfo = await mongoClient.connect(dbUrl);
         let db = clientInfo.db('stud_mentor');
@@ -136,11 +131,12 @@ app.post("/studentlist", async function (req, res) {
             _id: studentId,
             "studentName": studentName
         }
-        db.collection("students").insertOne(student, function (err, res) {
+        console.log('1');
+        db.collection("students").insertOne(student, function (err, data) {
             if (err) throw err;
             console.log("inserted");
         })
-
+      console.log('2');
         let data = await db.collection("students").find().toArray();
         res.status(200).json(data)
         clientInfo.close();
@@ -356,26 +352,27 @@ app.post("/assignmentor", async function (req, res) {
 })
 
 
-app.post("/mentorToStudents",async function(req,res){
-try{
-    let mentorId = req.body.mentorId
+app.post("/mentorToStudents", async function (req, res) {
+    try {
+        let mentorId = req.body.mentorId
+        
 
-    let clientInfo = await mongoClient.connect(dbUrl);
-    let db = clientInfo.db('stud_mentor');
-    let data= await db.collection('assign').find({_id:mentorId}).toArray()
-    if(data.length){
-       
-        res.send(data)
-        clientInfo.close();
+        let clientInfo = await mongoClient.connect(dbUrl);
+        let db = clientInfo.db('stud_mentor');
+        let data = await db.collection('assign').find({ _id: mentorId }).toArray();
+        console.log(data);
+        if (data.length) {
+            res.send(data)
+            clientInfo.close();
+        }
+        else if (data.length === 0) {
+            res.status(404).json({ message: 'Mentor Not Found' })
+            clientInfo.close()
+        }
     }
-    else if(data.length===0){
-        res.status(404).json({message:'Mentor Not Found'})
-        clientInfo.close()
+    catch (error) {
+        console.log(error);
     }
-}
-catch(error){
-console.log(error);
-}
 
 
 })
